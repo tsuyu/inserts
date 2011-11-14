@@ -90,7 +90,7 @@ class inserts {
 }
 
 //csv path
-$path = "C:\\Users\\tsuyu_7\\Desktop\\backup_pknp\\data.csv";
+$path = "C:\\data.csv";
 //table
 $table = "user";
 //field
