@@ -26,26 +26,28 @@ This file is part of inserts.
 class inserts {
 
     private $path = "";
+	private $path_sql = "";
     private $table = "";
     private $field = "";
     private $type = "";
     private $mode = "";
 
-    public function __construct($path, $table, $field, $type, $mode) {
+    public function __construct($path, $table, $field, $type, $mode, $path_sql) {
         $this->path = $path;
         $this->table = $table;
         $this->field = $this->quote($field);
         $this->type = $type;
         $this->mode = $mode;
+		$this->path_sql = $path_sql;
     }
 
     private function db() {
 
-        $connection = @mysql_connect("host", "username", "123456");
+        $connection = @mysql_connect("host", "username", "password");
 
         if (!$connection) { echo("connection not available");exit;}
 
-        if (!mysql_select_db("db_name")) {echo("no database selected");exit;}
+        if (!mysql_select_db("database")) {echo("no database selected");exit;}
         
         return $connection;
     }
@@ -104,10 +106,19 @@ class inserts {
                 . implode($this->wrap($template), ",") . ";\nUNLOCK TABLES;";
     }
 
+    function write_file(){
+		$fp = fopen($this->path_sql."dump.sql", 'w+');
+		fwrite($fp, $this->init());
+		fclose($fp);
+    }
+
 }
 
 //csv path
 $path = "C:\\data.csv";
+
+//sql ouput file path
+$path_sql = "C:\\Users\\Username\\Desktop\\";
 //table
 $table = "user";
 //field
@@ -117,6 +128,6 @@ $type = array('n', 's', 's');
 //csv/db
 $mode = "db";
 
-$a = new inserts($path, $table, $field, $type, $mode);
-echo $a->init();
+$a = new inserts($path, $table, $field, $type, $mode, $path_sql);
+$a->write_file();
 ?>
