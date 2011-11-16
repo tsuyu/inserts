@@ -100,8 +100,8 @@ class inserts {
                 array_push($template, implode($data_n, ","));
             }
         }
-        return "INSERT INTO `" . $this->table . "` (" . implode($this->field, ',') . ") VALUES\n"
-                . implode($this->wrap($template), ",") . ";";
+        return "LOCK TABLES `" . $this->table . "` WRITE;\nINSERT INTO `" . $this->table . "` (" . implode($this->field, ',') . ") VALUES\n"
+                . implode($this->wrap($template), ",") . ";\nUNLOCK TABLES;";
     }
 
 }
