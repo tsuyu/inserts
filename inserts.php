@@ -26,7 +26,7 @@ This file is part of inserts.
 class inserts {
 
     private $path = "";
-	private $path_sql = "";
+    private $path_sql = "";
     private $table = "";
     private $field = "";
     private $type = "";
@@ -38,7 +38,7 @@ class inserts {
         $this->field = $this->quote($field);
         $this->type = $type;
         $this->mode = $mode;
-		$this->path_sql = $path_sql;
+	$this->path_sql = $path_sql;
     }
 
     private function db() {
@@ -106,10 +106,10 @@ class inserts {
                 . implode($this->wrap($template), ",") . ";\nUNLOCK TABLES;";
     }
 
-    function write_file(){
-		$fp = fopen($this->path_sql."dump.sql", 'w+');
-		fwrite($fp, $this->init());
-		fclose($fp);
+    public function write_file(){
+	$fp = fopen($this->path_sql."dump.sql", 'w+');
+	fwrite($fp, $this->init());
+	fclose($fp);
     }
 
 }
