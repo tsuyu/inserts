@@ -183,7 +183,7 @@ $field = array('signin_id', 'name', 'email');
 
 /* desc : general field type
  * option type:-
- * 	a) s - string
+ * a) s - string
  * b) n - numeric
  */
 $type = array('n', 's', 's');
