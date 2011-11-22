@@ -38,7 +38,7 @@ class inserts {
         $this->path = $path;
         $this->table = $table;
         $this->join_table = $join_table;
-        $this->field = $this->quote($field);
+        $this->field = $field;
         $this->type = $type;
         $this->mode = $mode;
         $this->path_sql = $path_sql;
@@ -51,23 +51,16 @@ class inserts {
         $connection = @mysql_connect("host", "username", "password");
 
         if (!$connection) {
-            echo("connection not available");
+            echo "connection not available";
             exit;
         }
 
         if (!mysql_select_db("database")) {
-            echo("no database selected");
+            echo "no database selected";
             exit;
         }
 
         return $connection;
-    }
-
-    public function quote($field) {
-        foreach ($field as $key => $value) {
-            $field[$key] = "`" . $field[$key] . "`";
-        }
-        return $field;
     }
 
     public function string_type($data, $type) {
@@ -101,7 +94,7 @@ class inserts {
 
             $this->db();
 
-            $sql = "SELECT " . implode($this->field, ",") . " FROM " . $this->table . "";
+            $sql = "SELECT " . implode($this->field[0], ",") . " FROM " . $this->table . "";
             if (!empty($this->join_table)) {
                 $sql .= $this->join_table;
             }
@@ -112,7 +105,8 @@ class inserts {
             $result = mysql_query($sql);
 
             if (!$result) {
-                echo("sql cannot be executed");
+                echo $sql;
+                //"sql cannot be executed";
                 exit;
             }
             $i = 1;
@@ -142,12 +136,12 @@ class inserts {
 
             $r = '';
             foreach ($e as $key => $value) {
-                $r .= "LOCK TABLES `" . $this->table . "` WRITE;\nINSERT INTO `" . $this->table . "` (" . implode($this->field, ',') . ") VALUES\n"
-                        . implode($this->wrap($value), ",") . ";\nUNLOCK TABLES; \n";
+                $r .= "LOCK TABLES `" . $this->table . "` WRITE;\nINSERT INTO `" . $this->table . "` (" . implode($this->field[1], ',') . ") VALUES\n"
+                        . implode($this->wrap($value), ",") . ";\nUNLOCK TABLES; \n\n";
             }
             return $r;
         } else if ($this->divide == 'd') {
-            return "LOCK TABLES `" . $this->table . "` WRITE;\nINSERT INTO `" . $this->table . "` (" . implode($this->field, ',') . ") VALUES\n"
+            return "LOCK TABLES `" . $this->table . "` WRITE;\nINSERT INTO `" . $this->table . "` (" . implode($this->field[1], ',') . ") VALUES\n"
                     . implode($this->wrap($template), ",") . ";\nUNLOCK TABLES; \n";
         }
     }
@@ -178,8 +172,14 @@ $table = "user";
 /* join table if exist */
 $join_table = '';
 
-/* list of field */
-$field = array('signin_id', 'name', 'email');
+/* list of field
+ * sequence must be same
+ * array 1 field for sql query
+ * array 2 field for insert statement
+ */
+$field = array(
+    array('`signin_id`', 'SUBSTRING(`name`,1,2)', '`email`'),
+    array('`signin_id`', '`name`', '`email`'));
 
 /* desc : general field type
  * option type:-
@@ -209,12 +209,11 @@ $criteria = "";
 
 /* specify the devide of sql statement
  * d - default
- * 1...
+ * 1..2..3..4(divide option)
  */
 $divide = 'd';
 
 
 $a = new inserts($path, $table, $join_table, $field, $type, $mode, $path_sql, $criteria, $divide);
 $a->write_file($output);
-
 ?>
