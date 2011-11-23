@@ -105,8 +105,7 @@ class inserts {
             $result = mysql_query($sql);
 
             if (!$result) {
-                echo $sql;
-                //"sql cannot be executed";
+                echo "sql cannot be executed";
                 exit;
             }
             $i = 1;
